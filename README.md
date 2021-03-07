@@ -25,7 +25,7 @@ The last two arguments are not necessary; if they are not included, the subject 
 2. If Gmail detects the email bomber, sending from that account may be temporarily paused; use at your own risk.
 
 ## Future Updates
-1. Temporarily remove blocked or paused accounts from the list during random sending.
+1. Temporarily remove blocked or paused accounts from the list during random sending
 2. Implement multithreading so that emails can be sent at a greater rate
 
 ## License
