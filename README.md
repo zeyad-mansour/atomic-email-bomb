@@ -16,7 +16,7 @@ pip3 install -r requirements.txt
 ## Usage
 Arguments must be passed by running the program via the CLI. For example,
 ```
-python3 emailbomb.py recieving_email@domain.com 500 "subject" "body"
+python3 bomb.py recieving_email@domain.com 500 "subject" "body"
 ```
 The last two arguments are not necessary; if they are not included, the subject and body will auto-generate. If one of the two is included, the other must be also.
 
@@ -25,7 +25,7 @@ The last two arguments are not necessary; if they are not included, the subject 
 2. If Gmail detects the email bomber, sending from that account may be temporarily paused; use at your own risk.
 
 ## Future Updates
-1. Change the default sending algorithm so it cycles over the email addresses and sends one email for each
+1. Temporarily remove blocked or paused accounts from the list during random sending.
 2. Implement multithreading so that emails can be sent at a greater rate
 
 ## License
