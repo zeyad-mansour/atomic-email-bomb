@@ -1,0 +1,3 @@
+address1@domain.com:password123
+address2@domain.com:password456
+address3@domain.com:password789
