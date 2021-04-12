@@ -3,7 +3,7 @@
 This is a tool for flooding an email address with many emails.
 
 ## Disclaimer
-Neither creator may be held liable for any consequence of this tool's usage. Please note that this is all for fun and games and should not be used for malicious purposes. Using email bombers for harassment or denial-of-service attacks is unethical and illegal; we do not condone that in any way.
+No creator may be held liable for any consequence of this tool's usage. Please note that this is all for fun and games and should not be used for malicious purposes. Using email bombers for harassment or denial-of-service attacks is unethical and illegal; we do not condone that in any way.
 
 ## Installation
 
