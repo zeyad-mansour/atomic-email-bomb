@@ -24,9 +24,5 @@ The last two arguments are not necessary; if they are not included, the subject 
 1. By default, Gmail accounts have a sending limit of 500 emails per day. Gmail Workspace (formerly G Suite) accounts have a sending limit of 2000 emails per day.
 2. If Gmail detects the email bomber, sending from that account may be temporarily paused; use at your own risk.
 
-## Future Updates
-1. Temporarily remove blocked or paused accounts from the list during random sending
-2. Implement multithreading so that emails can be sent at a greater rate
-
 ## License
 [MIT](https://github.com/zeyad-mansour/atomic-email-bomb/blob/main/LICENSE)
